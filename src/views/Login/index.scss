@@ -1,0 +1,60 @@
+#login {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .login-ruleForm {
+        position: relative;
+        width: 400px;
+        height: 360px;
+        .codeBox {
+            display: flex;
+            align-items: center;
+            .codeImg {
+                width: 150px;
+                margin-right: 20px;
+            }
+            .codeInput {
+                width: 100px;
+            }
+        }
+        .show-pwd {
+            position: absolute;
+            right: 10px;
+            font-size: 16px;
+            color: #fff;
+            cursor: pointer;
+            user-select: none;
+            .svg-icon {
+                width: 1em;
+                vertical-align: -0.15em;
+                fill: currentColor;
+                overflow: hidden;
+            }
+        }
+    }
+    .tips {
+        color: #ffffff;
+        text-align: right;
+        span {
+            font-size: 16px;
+            color: #ecde16;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-shadow: 0px 0px 1px #ffffff;
+        }
+    }
+}
+#fire {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+#clock {
+    position: relative;
+    z-index: 99;
+}

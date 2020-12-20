@@ -1,0 +1,93 @@
+#note {
+    width: 80%;
+    .btnBox {
+        position: relative;
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        span {
+            .img {
+                width: 30px;
+                margin: 0 10px;
+                cursor: pointer;
+            }
+        }
+        .emojiBox {
+            position: absolute;
+            left: 0px;
+            top: 40px;
+            z-index: 99;
+            background: rgba($color: #000000, $alpha: 0.8);
+            border-radius: 5px;
+            padding: 5px;
+            > span {
+                display: inline-block;
+                margin: 2px;
+                img {
+                    width: 25px;
+                    object-fit: cover;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .listBox {
+        ul {
+            list-style: none;
+            li:nth-child(odd) {
+                background: #f5f5f5;
+            }
+            li {
+                .userIcon {
+                    transition: transform 2s ease-out;
+                }
+                &:hover {
+                    .userIcon {
+                        transform: rotate(360deg);
+                    }
+                }
+                margin: 15px 0;
+                padding: 5px 0;
+                border-bottom: 1px #f1f1f1 solid;
+                border-radius: 10px;
+                .head {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+
+                    span {
+                        font-size: 14px;
+                        margin-left: 10px;
+                    }
+                    .color {
+                        color: #666;
+                        font-size: 12px;
+                    }
+                    .delete {
+                        position: absolute;
+                        right: 10px;
+                    }
+                }
+                .images {
+                    padding: 10px 30px;
+                    img {
+                        width: 80px;
+                        margin-left: 10px;
+                        object-fit: cover;
+                        border-radius: 5px;
+                    }
+                }
+                .content {
+                    display: flex;
+                    align-items: center;
+                    padding: 10px 30px;
+                    img {
+                        width: 30px;
+                        object-fit: cover;
+                        margin: 0 3px;
+                    }
+                }
+            }
+        }
+    }
+}
