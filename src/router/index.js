@@ -4,7 +4,7 @@
  * hidden: false 表示会在菜单上显示，否则不会
  */
 
-import { createWebHistory, createRouter } from "vue-router"
+import { createWebHashHistory, createRouter } from "vue-router"
 
 const routes = [
     {
@@ -67,7 +67,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
     scrollBehavior: () => ({ y: 0 }),
 })

@@ -232,9 +232,10 @@ export default defineComponent({
 
     onMounted(() => {
       document.onkeyup = (e) => {
-        // console.log(e);
+        e.stopPropagation()  
         let event = e || window.event;
-        if (event.keyCode === 13) {
+        // 同时按住ctrl和enter键才发表动态
+        if (event.ctrlKey && event.keyCode === 13) {
           handleSend();
         }
       };

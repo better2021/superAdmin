@@ -18,7 +18,7 @@
       <el-table-column label="头像" width="180">
         <template v-slot="scope">
           <el-avatar v-if="scope.row.imgUrl" :src="scope.row.imgUrl"></el-avatar>
-          <el-avatar v-else src="/@/assets/images/unnamed.jpg"></el-avatar>
+          <el-avatar v-else src="/images/unnamed.jpg"></el-avatar>
         </template>
       </el-table-column>
 

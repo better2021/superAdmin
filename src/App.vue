@@ -2,7 +2,13 @@
   <Menu v-if="isShow" :bgColor="color"></Menu>
   <div id="warp">
     <div class="tipBox" v-if="isShow">
-      <el-color-picker v-model="color" :predefine="predefineColors" size="mini" @change="handleChange"> </el-color-picker>
+      <el-color-picker
+        v-model="color"
+        :predefine="predefineColors"
+        size="mini"
+        @change="handleChange"
+      >
+      </el-color-picker>
       <span
         >欢迎您，<i :style="{ color: color }"> {{ userName }}</i></span
       >
@@ -27,7 +33,19 @@ export default {
       userName: "",
       imgUrl: "",
       color: "#545c64",
-      predefineColors: ["#545c64", "#8FCDDA", "#5f9da3", "#463750", "#2a2b3d", "#4A3F55", "#283c5f", "#ad1341", "#c55c66", "#4aa9a4", "#2089a5"],
+      predefineColors: [
+        "#545c64",
+        "#8FCDDA",
+        "#5f9da3",
+        "#463750",
+        "#2a2b3d",
+        "#4A3F55",
+        "#283c5f",
+        "#ad1341",
+        "#c55c66",
+        "#4aa9a4",
+        "#2089a5",
+      ],
     };
   },
   watch: {
@@ -115,7 +133,16 @@ export default {
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background-color: #2089a5;
-    background-image: -webkit-linear-gradient(45deg, hsla(0, 0%, 100%, 0.4) 25%, transparent 0, transparent 50%, hsla(0, 0%, 100%, 0.4) 0, hsla(0, 0%, 100%, 0.4) 75%, transparent 0, transparent);
+    background-image: -webkit-linear-gradient(
+      45deg,
+      hsla(0, 0%, 100%, 0.4) 25%,
+      transparent 0,
+      transparent 50%,
+      hsla(0, 0%, 100%, 0.4) 0,
+      hsla(0, 0%, 100%, 0.4) 75%,
+      transparent 0,
+      transparent
+    );
   }
   /* 外层轨道*/
   &::-webkit-scrollbar-track {
