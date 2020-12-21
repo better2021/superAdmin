@@ -1,31 +1,33 @@
 <template>
-  <el-tag
-    :key="tag"
-    v-for="tag in dynamicTags"
-    closable
-    :disable-transitions="false"
-    @close="handleDelete(tag)"
-  >
-    {{ tag.ip }}
-  </el-tag>
-  <el-input
-    class="input-new-tag"
-    v-if="inputVisible"
-    v-model="inputValue"
-    ref="saveTagInput"
-    size="small"
-    @blur="handleInputConfirm"
-  >
-  </el-input>
-  <el-button
-    v-else
-    class="button-new-tag"
-    size="small"
-    type="primary"
-    icon="el-icon-circle-plus-outline"
-    @click="showInput"
-    >添加IP</el-button
-  >
+  <div id="ipAddress">
+    <el-tag
+      :key="tag"
+      v-for="tag in dynamicTags"
+      closable
+      :disable-transitions="false"
+      @close="handleDelete(tag)"
+    >
+      {{ tag.ip }}
+    </el-tag>
+    <el-input
+      class="input-new-tag"
+      v-if="inputVisible"
+      v-model="inputValue"
+      ref="saveTagInput"
+      size="small"
+      @blur="handleInputConfirm"
+    >
+    </el-input>
+    <el-button
+      v-else
+      class="button-new-tag"
+      size="small"
+      type="primary"
+      icon="el-icon-circle-plus-outline"
+      @click="showInput"
+      >添加IP</el-button
+    >
+  </div>
 </template>
 
 <style>

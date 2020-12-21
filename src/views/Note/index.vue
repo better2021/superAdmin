@@ -5,9 +5,9 @@
       </el-input>
       <div class="btnBox">
         <span>
-          <img src="/@/assets/images/image.png" class="img" alt="" @click="handleShow" />
+          <img src="/images/image.png" class="img" alt="" @click="handleShow" />
           <img
-            src="/@/assets/images/happy.png"
+            src="/images/happy.png"
             class="img"
             alt=""
             @click="handleVisible"
@@ -23,7 +23,7 @@
             :key="item.name"
             @click="handleEmoji(item)"
           >
-            <img :src="`/@/assets/emoji/${item.name}.png`" />
+            <img :src="`/emoji/${item.name}.png`" />
           </span>
         </div>
       </div>
@@ -82,6 +82,8 @@ import Uploads from "/@/components/Uploads/index.vue";
 import Pagination from "/@/components/Pagination/index.vue";
 import emoji from "/@/assets/emoji.json";
 import { defineComponent, ref, getCurrentInstance, onMounted, reactive } from "vue";
+import { useStore } from "vuex";
+
 export default defineComponent({
   components: {
     Uploads,
@@ -89,7 +91,7 @@ export default defineComponent({
     VuePictureSwipe,
   },
   setup() {
-    const { ctx } = getCurrentInstance();
+    const { proxy } = getCurrentInstance();
     let textarea = ref("");
     const images = ref([]);
     const total = ref(0);
@@ -118,9 +120,12 @@ export default defineComponent({
       pageNum: 1,
       pageSize: 10,
     });
-    const userName = ctx.$store.getters.userInfo.name;
-    const icon = ctx.$store.getters.userInfo.imgUrl;
-    const userId = ctx.$store.getters.userInfo.userId;
+
+    const store = useStore();
+
+    const userName = store.getters.userInfo.name;
+    const icon = store.getters.userInfo.imgUrl;
+    const userId = store.getters.userInfo.userId;
 
     const handleShow = () => {
       isShow.value = !isShow.value;
@@ -141,7 +146,7 @@ export default defineComponent({
       const str = text
         .replace(/(\[.*?\])/g, ($1) => {
           if (emoji[$1]) {
-            const url = `/@/assets/emoji/${emoji[$1]}.png`;
+            const url = `/emoji/${emoji[$1]}.png`;
             return `<img src="${url}" class="emoji" title="emoji" name="${$1}" style="user-select:none" oncontextmenu="return false"/>`;
           } else {
             return $1;
@@ -190,7 +195,7 @@ export default defineComponent({
     // 获取列表
     const getNoteList = async () => {
       try {
-        let res = await ctx.$axios({
+        let res = await proxy.$axios({
           method: "get",
           url: "/api/notes",
           params: query,
@@ -213,7 +218,7 @@ export default defineComponent({
           console.log(array);
           items.value = array;
         } else {
-          ctx.$message({
+          proxy.$message({
             type: "error",
             message: res.msg,
           });
@@ -238,22 +243,22 @@ export default defineComponent({
     // 发表动态
     const handleSend = async () => {
       if (textarea.value.trim() === "") {
-        ctx.$message({
+        proxy.$message({
           type: "warning",
           message: "发表的内容不能为空！",
         });
         return;
       }
 
-      if (ctx.$refs.uploadFiles.fileList.length) {
-        ctx.$message({
+      if (proxy.$refs.uploadFiles.fileList.length) {
+        proxy.$message({
           type: "warning",
           message: "请先上传图片到服务器",
         });
         return;
       }
 
-      let res = await ctx.$axios({
+      let res = await proxy.$axios({
         method: "post",
         url: "/api/notes",
         data: {
@@ -272,12 +277,12 @@ export default defineComponent({
         isShow.value = false;
         state.emojiShow = false;
         getNoteList();
-        ctx.$message({
+        proxy.$message({
           type: "success",
           message: "发表成功",
         });
       } else {
-        ctx.$message({
+        proxy.$message({
           type: "error",
           message: res.msg,
         });
@@ -286,7 +291,7 @@ export default defineComponent({
 
     // 删除发表的动态
     const handleDelete = async (item) => {
-      ctx
+      proxy
         .$confirm("此操作将永久删除该选项, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -294,20 +299,20 @@ export default defineComponent({
         })
         .then(async () => {
           try {
-            const res = await ctx.$axios({
+            const res = await proxy.$axios({
               method: "delete",
               url: `/api/notes/${item.id}`,
             });
 
             if (res.code !== 200) {
-              return ctx.$message({
+              return proxy.$message({
                 type: "error",
                 message: res.msg,
               });
             }
 
             getNoteList(); // 刷新列表
-            ctx.$message({
+            proxy.$message({
               type: "success",
               message: "删除成功",
             });

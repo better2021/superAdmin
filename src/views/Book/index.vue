@@ -6,9 +6,17 @@
           <i class="el-input__icon el-icon-search"></i>
         </template>
       </el-input>
-      <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        >搜索</el-button
+      >
       <el-button type="success" @click="handleReset">重置</el-button>
-      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleNew" class="newBtn">新增</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-circle-plus-outline"
+        @click="handleNew"
+        class="newBtn"
+        >新增</el-button
+      >
     </div>
 
     <el-table :data="tableData" border stripe class="tableBox" v-loading="loading">
@@ -24,16 +32,33 @@
       </el-table-column>
       <el-table-column label="操作">
         <template v-slot="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button
+          >
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
-    <Pagination v-show="total > 0" :total="total" v-model:page.sync="query.pageNum" v-model:limit.sync="query.pageSize" @pagination="getList()"></Pagination>
+    <Pagination
+      v-show="total > 0"
+      :total="total"
+      v-model:page.sync="query.pageNum"
+      v-model:limit.sync="query.pageSize"
+      @pagination="getList()"
+    ></Pagination>
 
     <div>
-      <el-dialog :title="type === 'create' ? '新增书籍' : '编辑书籍'" v-model="dialogVisible" width="500px">
+      <el-dialog
+        :title="type === 'create' ? '新增书籍' : '编辑书籍'"
+        v-model="dialogVisible"
+        width="500px"
+      >
         <el-form ref="ruleForm" :model="fromData" :rules="rules" label-width="80px">
           <el-form-item label="书籍名称" prop="title">
             <el-input v-model="fromData.title" placeholder="请输入书籍名称"></el-input>
@@ -62,19 +87,23 @@
 <script>
 import { ref, reactive, getCurrentInstance, onMounted } from "vue";
 import Pagination from "/@/components/Pagination/index.vue";
+import { useStore } from "vuex";
 export default {
   components: {
     Pagination,
   },
   setup() {
-    const { ctx } = getCurrentInstance();
+    const { proxy } = getCurrentInstance();
     const title = ref("");
     const total = ref(0);
     const tableData = ref([]);
     const loading = ref(false);
     const dialogVisible = ref(false);
     const type = ref("create");
-    const userInfo = ctx.$store.getters.userInfo;
+
+    const store = useStore();
+    const userInfo = store.getters.userInfo
+
     const userId = userInfo.userId || 1;
     const query = reactive({
       pageNum: 1,
@@ -87,6 +116,7 @@ export default {
       author: "",
       userId: Number(userId),
     });
+
     const rules = reactive({
       title: [
         { required: true, message: "请输入书籍名称", trigger: "blur" },
@@ -96,12 +126,11 @@ export default {
       desc: [{ required: true, message: "请输入描述", trigger: "blur" }],
     });
 
-    // console.log(ctx);
-
     // 获取书籍列表
     const getList = async () => {
+      console.log(1212);
       try {
-        let res = await ctx.$axios({
+        let res = await proxy.$axios({
           url: "/api/books",
           method: "get",
           params: {
@@ -116,7 +145,7 @@ export default {
           total.value = res.attr.total;
         }
 
-        // console.log(res, "--");
+        console.log(res, "--");
       } catch (err) {
         console.log(err);
       }
@@ -147,8 +176,8 @@ export default {
         fromData[key] = "";
       }
       fromData.userId = Number(userId);
-      ctx.$nextTick(() => {
-        ctx.$refs["ruleForm"].clearValidate();
+      proxy.$nextTick(() => {
+        proxy.$refs["ruleForm"].clearValidate();
       });
     };
 
@@ -161,24 +190,24 @@ export default {
       });
       fromData.id = row.id;
       console.log(fromData, row);
-      ctx.$nextTick(() => {
-        ctx.$refs["ruleForm"].clearValidate();
+      proxy.$nextTick(() => {
+        proxy.$refs["ruleForm"].clearValidate();
       });
     };
 
     // 确认
     const handleSure = () => {
-      ctx.$refs["ruleForm"].validate(async (valid) => {
+      proxy.$refs["ruleForm"].validate(async (valid) => {
         if (!valid) return;
         let res;
         if (type.value === "create") {
-          res = await ctx.$axios({
+          res = await proxy.$axios({
             url: "/api/books",
             method: "post",
             data: fromData,
           });
         } else {
-          res = await ctx.$axios({
+          res = await proxy.$axios({
             url: `/api/books/${fromData.id}`,
             method: "put",
             data: fromData,
@@ -189,12 +218,12 @@ export default {
           dialogVisible.value = false;
           getList();
 
-          ctx.$message({
+          proxy.$message({
             type: "success",
             message: type.value === "create" ? "创建成功" : "更新成功",
           });
         } else {
-          ctx.$message({
+          proxy.$message({
             type: "error",
             message: res.msg,
           });
@@ -204,21 +233,21 @@ export default {
 
     // 删除
     const handleDelete = (row) => {
-      ctx
+      proxy
         .$confirm("此操作将永久删除该选项, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
         })
         .then(async () => {
-          const res = await ctx.$axios({
+          const res = await proxy.$axios({
             url: `/api/books/${row.id}`,
             method: "DELETE",
           });
           if (res.code !== 200) {
-            return ctx.$message.error(res.msg || "删除失败");
+            return proxy.$message.error(res.msg || "删除失败");
           }
-          ctx.$message({
+          proxy.$message({
             type: "success",
             message: "删除成功!",
           });

@@ -152,7 +152,7 @@ export default {
     },
     // 返回icon的路劲
     iconPath(icon) {
-      return `/@/assets/icons/svg/${icon}.svg`;
+      return `/icons/svg/${icon}.svg`;
     },
     // 密码的显示与隐藏
     showPwd() {

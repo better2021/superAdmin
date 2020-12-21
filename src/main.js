@@ -41,8 +41,8 @@ app.use(router) // 使用路由
 app.use(store) // 使用状态管理
 app.use(ElementPlus) // 使用ElementPlus组件库
 app.use(lazyPlugin, {
-    loading: "/@/assets/images/loading.gif",
-    error: "/@/assets/images/error.png",
+    loading: "/images/loading.gif",
+    error: "/images/error.png",
 })
 
 app.mount("#app") // 挂载到id为app的元素上

@@ -61,7 +61,7 @@ export default {
 
       let userInfo = this.$store.getters.userInfo;
       this.userName = userInfo.name || "";
-      this.imgUrl = userInfo.imgUrl || "/@/assets/images/unnamed.jpg";
+      this.imgUrl = userInfo.imgUrl || "/images/unnamed.jpg";
       this.color = userInfo ? userInfo.themeColor || "#545c64" : "#545c64";
       // console.log(this.color, "themeColor");
     },

@@ -62,19 +62,23 @@
 <script>
 import { ref, reactive, getCurrentInstance, onMounted } from "vue";
 import Pagination from "/@/components/Pagination/index.vue";
+import { useStore } from "vuex";
+
 export default {
   components: {
     Pagination,
   },
   setup() {
-    const { ctx } = getCurrentInstance();
+    const { proxy } = getCurrentInstance();
     const title = ref("");
     const total = ref(0);
     const tableData = ref([]);
     const loading = ref(false);
     const dialogVisible = ref(false);
     const type = ref("create");
-    const userInfo = ctx.$store.getters.userInfo;
+
+    const store = useStore();
+    const userInfo = store.getters.userInfo;
     const userId = userInfo ? userInfo.userId : 1;
     const query = reactive({
       pageNum: 1,
@@ -96,12 +100,12 @@ export default {
       desc: [{ required: true, message: "请输入描述", trigger: "blur" }],
     });
 
-    console.log(ctx);
+    console.log(proxy);
 
     // 获取歌曲列表
     const getList = async () => {
       try {
-        let res = await ctx.$axios({
+        let res = await proxy.$axios({
           url: "/api/musics",
           method: "get",
           params: {
@@ -144,8 +148,8 @@ export default {
         fromData[key] = "";
       }
       fromData.userId = Number(userId);
-      ctx.$nextTick(() => {
-        ctx.$refs["ruleForm"].clearValidate();
+      proxy.$nextTick(() => {
+        proxy.$refs["ruleForm"].clearValidate();
       });
     };
 
@@ -158,24 +162,24 @@ export default {
       });
       fromData.id = row.id;
       console.log(fromData, row);
-      ctx.$nextTick(() => {
-        ctx.$refs["ruleForm"].clearValidate();
+      proxy.$nextTick(() => {
+        proxy.$refs["ruleForm"].clearValidate();
       });
     };
 
     // 确认
     const handleSure = () => {
-      ctx.$refs["ruleForm"].validate(async (valid) => {
+      proxy.$refs["ruleForm"].validate(async (valid) => {
         if (!valid) return;
         let res;
         if (type.value === "create") {
-          res = await ctx.$axios({
+          res = await proxy.$axios({
             url: "/api/musics",
             method: "post",
             data: fromData,
           });
         } else {
-          res = await ctx.$axios({
+          res = await proxy.$axios({
             url: `/api/musics/${fromData.id}`,
             method: "put",
             data: fromData,
@@ -186,12 +190,12 @@ export default {
           dialogVisible.value = false;
           getList();
 
-          ctx.$message({
+          proxy.$message({
             type: "success",
             message: type.value === "create" ? "创建成功" : "更新成功",
           });
         } else {
-          ctx.$message({
+          proxy.$message({
             type: "error",
             message: res.msg,
           });
@@ -201,21 +205,21 @@ export default {
 
     // 删除
     const handleDelete = (row) => {
-      ctx
+      proxy
         .$confirm("此操作将永久删除该选项, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
         })
         .then(async () => {
-          const res = await ctx.$axios({
+          const res = await proxy.$axios({
             url: `/api/musics/${row.id}`,
             method: "DELETE",
           });
           if (res.code !== 200) {
-            return ctx.$message.error(res.msg || "删除失败");
+            return proxy.$message.error(res.msg || "删除失败");
           }
-          ctx.$message({
+          proxy.$message({
             type: "success",
             message: "删除成功!",
           });

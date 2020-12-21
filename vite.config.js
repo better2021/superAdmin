@@ -8,4 +8,5 @@ module.exports = {
 		// 键必须以斜线开始和结束
 		"/@/": path.resolve(__dirname, "./src"),
 	},
+	base: "../../", // 根路劲
 }
