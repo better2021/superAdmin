@@ -2,10 +2,16 @@
   <div id="wrapHome">
     <el-tabs v-model="activeName" type="card">
       <el-tab-pane label="用户管理" name="user">
-        <Home v-show="activeName === 'user'"></Home>
+        <!-- 失活的组件将会被缓存！-->
+        <keep-alive>
+          <Home v-show="activeName === 'user'"></Home>
+        </keep-alive>
       </el-tab-pane>
       <el-tab-pane label="IP白名单" name="ip">
-        <IP v-show="activeName === 'ip'"></IP>
+        <!-- 失活的组件将会被缓存！-->
+        <keep-alive>
+          <IP v-show="activeName === 'ip'"></IP>
+        </keep-alive>
       </el-tab-pane>
     </el-tabs>
   </div>
