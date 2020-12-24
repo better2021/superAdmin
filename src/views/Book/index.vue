@@ -19,7 +19,15 @@
       >
     </div>
 
-    <el-table :data="tableData" border stripe class="tableBox" v-loading="loading">
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      class="tableBox"
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+    >
       <el-table-column prop="title" label="书籍名称" width="180"> </el-table-column>
       <el-table-column prop="author" label="作者" width="180"> </el-table-column>
       <el-table-column prop="year" label="年份" width="150"> </el-table-column>
@@ -102,7 +110,7 @@ export default {
     const type = ref("create");
 
     const store = useStore();
-    const userInfo = store.getters.userInfo
+    const userInfo = store.getters.userInfo;
 
     const userId = userInfo.userId || 1;
     const query = reactive({
@@ -128,7 +136,7 @@ export default {
 
     // 获取书籍列表
     const getList = async () => {
-      console.log(1212);
+      loading.value = true;
       try {
         let res = await proxy.$axios({
           url: "/api/books",
@@ -149,6 +157,7 @@ export default {
       } catch (err) {
         console.log(err);
       }
+      loading.value = false;
     };
 
     onMounted(() => {

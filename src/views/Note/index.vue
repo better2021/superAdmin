@@ -6,12 +6,7 @@
       <div class="btnBox">
         <span>
           <img src="/images/image.png" class="img" alt="" @click="handleShow" />
-          <img
-            src="/images/happy.png"
-            class="img"
-            alt=""
-            @click="handleVisible"
-          />
+          <img src="/images/happy.png" class="img" alt="" @click="handleVisible" />
         </span>
         <el-button type="primary" icon="el-icon-position" size="small" @click="handleSend"
           >发表动态</el-button
@@ -35,7 +30,7 @@
       ></Uploads>
     </div>
 
-    <div class="listBox">
+    <div class="listBox" v-loading="loading" element-loading-text="拼命加载中">
       <ul>
         <li v-for="item in list" :key="item.id">
           <div class="head">
@@ -96,6 +91,7 @@ export default defineComponent({
     const images = ref([]);
     const total = ref(0);
     const isShow = ref(false);
+    const loading = ref(false);
     const list = ref([]);
     const items = ref([
       {
@@ -194,6 +190,7 @@ export default defineComponent({
 
     // 获取列表
     const getNoteList = async () => {
+      loading.value = true;
       try {
         let res = await proxy.$axios({
           method: "get",
@@ -223,6 +220,7 @@ export default defineComponent({
             message: res.msg,
           });
         }
+        loading.value = false;
       } catch (err) {
         console.log(err);
       }
@@ -232,7 +230,7 @@ export default defineComponent({
 
     onMounted(() => {
       document.onkeyup = (e) => {
-        e.stopPropagation()  
+        e.stopPropagation();
         let event = e || window.event;
         // 同时按住ctrl和enter键才发表动态
         if (event.ctrlKey && event.keyCode === 13) {
@@ -339,6 +337,7 @@ export default defineComponent({
       userId,
       handleEmoji,
       handleShow,
+      loading,
       handleVisible,
       uploadSuccess,
       getNoteList,

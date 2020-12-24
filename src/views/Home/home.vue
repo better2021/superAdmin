@@ -12,7 +12,14 @@
       <el-button type="success" @click="handleReset">重置</el-button>
     </div>
 
-    <el-table :data="tableData" border stripe class="tableBox" v-loading="loading">
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      class="tableBox"
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+    >
       <el-table-column prop="name" label="呢称" width="180"> </el-table-column>
 
       <el-table-column label="头像" width="180">

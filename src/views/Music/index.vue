@@ -6,12 +6,27 @@
           <i class="el-input__icon el-icon-search"></i>
         </template>
       </el-input>
-      <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        >搜索</el-button
+      >
       <el-button type="success" @click="handleReset">重置</el-button>
-      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleNew" class="newBtn">新增</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-circle-plus-outline"
+        @click="handleNew"
+        class="newBtn"
+        >新增</el-button
+      >
     </div>
 
-    <el-table :data="tableData" border stripe class="tableBox" v-loading="loading">
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      class="tableBox"
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+    >
       <el-table-column prop="title" label="歌曲名称" width="180"> </el-table-column>
       <el-table-column prop="actor" label="歌手" width="180"> </el-table-column>
       <el-table-column prop="year" label="年份" width="150"> </el-table-column>
@@ -24,16 +39,33 @@
       </el-table-column>
       <el-table-column label="操作">
         <template v-slot="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button
+          >
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
-    <Pagination v-show="total > 0" :total="total" v-model:page.sync="query.pageNum" v-model:limit.sync="query.pageSize" @pagination="getList()"></Pagination>
+    <Pagination
+      v-show="total > 0"
+      :total="total"
+      v-model:page.sync="query.pageNum"
+      v-model:limit.sync="query.pageSize"
+      @pagination="getList()"
+    ></Pagination>
 
     <div>
-      <el-dialog :title="type === 'create' ? '新增歌曲' : '编辑歌曲'" v-model="dialogVisible" width="500px">
+      <el-dialog
+        :title="type === 'create' ? '新增歌曲' : '编辑歌曲'"
+        v-model="dialogVisible"
+        width="500px"
+      >
         <el-form ref="ruleForm" :model="fromData" :rules="rules" label-width="80px">
           <el-form-item label="歌曲名称" prop="title">
             <el-input v-model="fromData.title" placeholder="请输入歌曲名称"></el-input>
@@ -104,6 +136,7 @@ export default {
 
     // 获取歌曲列表
     const getList = async () => {
+      loading.value = true;
       try {
         let res = await proxy.$axios({
           url: "/api/musics",
@@ -116,11 +149,11 @@ export default {
         });
         tableData.value = res.data;
         total.value = res.attr.total;
-
         // console.log(res, "--");
       } catch (err) {
         console.log(err);
       }
+      loading.value = false;
     };
 
     onMounted(() => {
