@@ -26,7 +26,6 @@
       class="tableBox"
       v-loading="loading"
       element-loading-text="拼命加载中"
-      element-loading-spinner="el-icon-loading"
     >
       <el-table-column prop="title" label="书籍名称" width="180"> </el-table-column>
       <el-table-column prop="author" label="作者" width="180"> </el-table-column>

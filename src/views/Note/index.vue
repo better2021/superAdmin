@@ -220,10 +220,10 @@ export default defineComponent({
             message: res.msg,
           });
         }
-        loading.value = false;
       } catch (err) {
         console.log(err);
       }
+      loading.value = false;
     };
 
     getNoteList();

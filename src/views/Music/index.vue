@@ -19,38 +19,33 @@
       >
     </div>
 
-    <el-table
-      :data="tableData"
-      border
-      stripe
-      class="tableBox"
-      v-loading="loading"
-      element-loading-text="拼命加载中"
-    >
-      <el-table-column prop="title" label="歌曲名称" width="180"> </el-table-column>
-      <el-table-column prop="actor" label="歌手" width="180"> </el-table-column>
-      <el-table-column prop="year" label="年份" width="150"> </el-table-column>
-      <el-table-column prop="desc" label="描述"> </el-table-column>
-      <el-table-column label="创建时间" width="180">
-        <template v-slot="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.createAt }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template v-slot="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+    <div v-loading="loading">
+      <el-table :data="tableData" border stripe class="tableBox">
+        <el-table-column prop="title" label="歌曲名称" width="180"> </el-table-column>
+        <el-table-column prop="actor" label="歌手" width="180"> </el-table-column>
+        <el-table-column prop="year" label="年份" width="150"> </el-table-column>
+        <el-table-column prop="desc" label="描述"> </el-table-column>
+        <el-table-column label="创建时间" width="180">
+          <template v-slot="scope">
+            <i class="el-icon-time"></i>
+            <span style="margin-left: 10px">{{ scope.row.createAt }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template v-slot="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button
+            >
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <Pagination
       v-show="total > 0"
@@ -149,7 +144,7 @@ export default {
         });
         tableData.value = res.data;
         total.value = res.attr.total;
-        // console.log(res, "--");
+        console.log(res, "--");
       } catch (err) {
         console.log(err);
       }
