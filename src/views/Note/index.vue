@@ -212,7 +212,7 @@ export default defineComponent({
               array = array.concat(obj);
             }
           });
-          console.log(array);
+          // console.log(array);
           items.value = array;
         } else {
           proxy.$message({

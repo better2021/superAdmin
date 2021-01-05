@@ -56,6 +56,13 @@ const routes = [
         component: () => import("/@/views/Note/index.vue"),
         hidden: false,
     },
+    {
+        path: "/chat",
+        name: "聊天",
+        icon: "el-icon-chat-dot-round",
+        component: () => import("/@/views/Chat/index.vue"),
+        hidden: false,
+    },
     // 404 页面
     {
         path: "/:catchAll(.*)",

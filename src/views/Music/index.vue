@@ -144,7 +144,7 @@ export default {
         });
         tableData.value = res.data;
         total.value = res.attr.total;
-        console.log(res, "--");
+        // console.log(res, "--");
       } catch (err) {
         console.log(err);
       }
