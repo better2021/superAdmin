@@ -15,7 +15,8 @@
 		"vue-picture-swipe": "^2.0.2",
 		"vue-router": "^4.0.0-rc.3",
 		"vue3-lazy": "^1.0.0-alpha.1",
-		"vuex": "^4.0.0-rc.2"
+		"vuex": "^4.0.0-rc.2",
+		"websocket-heartbeat-js": "^1.0.12"
 	},
 	"devDependencies": {
 		"@vue/compiler-sfc": "^3.0.2",

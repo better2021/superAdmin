@@ -2673,6 +2673,11 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
+websocket-heartbeat-js@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/websocket-heartbeat-js/-/websocket-heartbeat-js-1.0.12.tgz#6dcb5006bf35f662a7b916f2a540d7efdd7d4092"
+  integrity sha512-ZjwgSl0kpf+vgOB4PhOKG26WN32uYSfrhV+HXMTMyXzQMPz7WEkJtg9iZZ4nZ2OanrE/XV66HXarz7m+SZYThQ==
+
 which@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/which/-/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
