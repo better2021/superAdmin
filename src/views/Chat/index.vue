@@ -11,7 +11,7 @@
       </div>
       <div class="rightRoom">
         <div class="roomTop">这个头部</div>
-        <div class="middleRoom">
+        <div class="middleRoom" ref="chatBox">
           <ul>
             <li
               v-for="(item, index) in chatMsgList"
@@ -47,6 +47,7 @@
 
 <script>
 import WebsocketHeartbeatJs from "websocket-heartbeat-js";
+
 export default {
   data() {
     return {
@@ -126,6 +127,7 @@ export default {
       this.ImSocket.onmessage = (event) => {
         const res = JSON.parse(event.data);
         let status = res.status;
+
         switch (status) {
           case -1: // 断开连接
             this.ImSocket.close();
@@ -135,7 +137,6 @@ export default {
           case 2: // 离开房间
             break;
           case 3: // 接受消息
-            console.log(res.data);
             this.chatMsgList.push(res.data);
             console.log(this.chatMsgList);
             break;
@@ -146,15 +147,20 @@ export default {
           default:
             console.log(res);
         }
+
+        const chatBox = this.$refs.chatBox;
+        // 设置滚动到底部
+        if (status) {
+          this.$nextTick(() => {
+            chatBox.scrollTop = chatBox.scrollHeight;
+          });
+        }
       };
     },
     // ws关闭
     wsClose() {
       this.ImSocket.onclose = () => {
-        const data = {
-          content: "websocket已关闭",
-        };
-        this.ImSocket.send(JSON.stringify(data));
+        console.log("ws close");
       };
     },
     // ws错误处理
