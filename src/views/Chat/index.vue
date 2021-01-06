@@ -21,7 +21,8 @@
               <img :src="item.img_url" class="imgUrl" />
               <div class="msgBox">
                 <h5>
-                  <span>{{ item.username }}</span> <span>{{ item.time }}</span>
+                  <span>{{ item.username }}</span>
+                  <span class="time">{{ formatDate(item.time) }}</span>
                 </h5>
                 <p>{{ item.content }}</p>
               </div>
@@ -195,6 +196,25 @@ export default {
       this.ImSocket.send(JSON.stringify(data));
       this.content = ""; // 消息发送后清空输入框
     },
+    formatDate(timestamp) {
+      try {
+        if (typeof timestamp === "string") return timestamp;
+        const date = new Date(timestamp);
+        const y = date.getFullYear();
+        const m = date.getMonth() + 1;
+        const d = date.getDate();
+        const hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+        const minute =
+          date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+        const second =
+          date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+        return `${y}/${m < 10 ? "0" + m : m}/${
+          d < 10 ? "0" + d : d
+        } ${hour}:${minute}:${second}`;
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 };
 </script>
@@ -207,6 +227,13 @@ export default {
   .el-input__inner {
     border: none;
     padding: 0 5px;
+    &::-webkit-input-placeholder {
+      color: pink;
+    }
+    &:-moz-placeholder {
+      /* Firefox 18- */
+      color: pink;
+    }
   }
 }
 </style>
