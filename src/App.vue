@@ -21,6 +21,11 @@ export default {
       isShow: false,
     };
   },
+  computed: {
+    color() {
+      return this.$store.getters.userInfo.themeColor || "#545C64";
+    },
+  },
   watch: {
     $route(to, from) {
       this.getPath();

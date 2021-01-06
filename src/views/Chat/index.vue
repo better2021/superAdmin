@@ -12,9 +12,21 @@
       <div class="rightRoom">
         <div class="roomTop">这个头部</div>
         <div class="middleRoom">
-          <span>{{ msgInfo.username }}</span>
-          <span>{{ msgInfo.time }}</span>
-          <span>{{ msgInfo.content }}</span>
+          <ul>
+            <li
+              v-for="(item, index) in chatMsgList"
+              :key="index"
+              :class="[userInfo.userId === item.uid ? 'self' : 'other']"
+            >
+              <img :src="item.img_url" class="imgUrl" />
+              <div class="msgBox">
+                <h5>
+                  <span>{{ item.username }}</span> <span>{{ item.time }}</span>
+                </h5>
+                <p>{{ item.content }}</p>
+              </div>
+            </li>
+          </ul>
         </div>
         <div class="roomBottom">
           <img src="/images/image.png" class="img" alt="" />
@@ -52,7 +64,7 @@ export default {
       userInfo: this.$store.getters.userInfo || {},
       room_id: "1",
       to_uid: "0", // 默认为0，表示群聊
-      msgInfo: {},
+      chatMsgList: [],
     };
   },
   created() {
@@ -100,7 +112,7 @@ export default {
           status: 1, // 用户上线
           data: {
             uid: this.userInfo.userId,
-            avatar_id: String(this.userInfo.userId),
+            img_url: this.userInfo.imgUrl,
             room_id: this.room_id,
             username: this.userInfo.name,
             content: "websocket已开启",
@@ -124,7 +136,8 @@ export default {
             break;
           case 3: // 接受消息
             console.log(res.data);
-            this.msgInfo = res.data;
+            this.chatMsgList.push(res.data);
+            console.log(this.chatMsgList);
             break;
           case 4: // 在线用户
             break;
@@ -169,11 +182,12 @@ export default {
           room_id: this.room_id,
           username: this.userInfo.name,
           uid: this.userInfo.userId,
-          avatar_id: String(this.userInfo.userId),
+          img_url: this.userInfo.imgUrl,
           to_uid: this.to_uid,
         },
       };
       this.ImSocket.send(JSON.stringify(data));
+      this.content = ""; // 消息发送后清空输入框
     },
   },
 };
