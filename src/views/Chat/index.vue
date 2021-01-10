@@ -6,23 +6,30 @@
           <li v-for="item in roomList" :key="item.id" @click="SelectRoom(item)">
             <img :src="item.imgUrl" alt="" />
             <span>{{ item.title }}</span>
+            <i>{{ userCount }}</i>
           </li>
+          <div v-for="(todo, index) in userList" :key="index">
+            <li @click="SelectUser(todo)" v-if="userInfo.userId !== todo.uid">
+              <img :src="todo.img_url" alt="" />
+              <span>{{ todo.username }}</span>
+            </li>
+          </div>
         </ul>
       </div>
       <div class="rightRoom">
         <div class="roomTop">这个头部</div>
         <div class="middleRoom" ref="chatBox">
-          <ul>
+          <ul v-if="chatMsgList.length !== 0">
             <li
               v-for="(item, index) in chatMsgList"
               :key="index"
-              :class="[userInfo.userId === item.uid ? 'self' : 'other']"
+              :class="[userInfo.userId === (item.uid || item.user_id) ? 'self' : 'other']"
             >
               <img :src="item.img_url" class="imgUrl" />
               <div class="msgBox">
                 <h5>
-                  <span>{{ item.username }}</span>
-                  <span class="time">{{ formatDate(item.time) }}</span>
+                  <span>{{ item.username || item.user_name }}</span>
+                  <span class="time">{{ formatDate(item.time || item.createAt) }}</span>
                 </h5>
                 <p>{{ item.content }}</p>
               </div>
@@ -67,10 +74,14 @@ export default {
       room_id: "1",
       to_uid: "0", // 默认为0，表示群聊
       chatMsgList: [],
+      UserList: [], //  用户在线用户列表
+      userCount: 0, // 在线用户人数
+      status: 3,
     };
   },
   created() {
     this.getRoomList();
+    this.getRoomHistory();
     this.ImSocket = new WebsocketHeartbeatJs(this.options);
     this.initIM(); // 初始化
   },
@@ -100,6 +111,19 @@ export default {
         console.log(err);
       }
     },
+    // 获取房间聊天历史记录
+    async getRoomHistory() {
+      try {
+        let res = await this.$axios({
+          url: `/api/room/${this.room_id}`,
+          method: "get",
+        });
+        console.log(res, "--");
+        this.chatMsgList = res.msg_list || [];
+      } catch (err) {
+        console.log(err);
+      }
+    },
     // 初始化IM
     initIM() {
       this.wsOpen();
@@ -110,8 +134,8 @@ export default {
     // ws打开连接
     wsOpen() {
       this.ImSocket.onopen = () => {
-        const data = {
-          status: 1, // 用户上线
+        const dataRoom = {
+          status: 1, // 群聊
           data: {
             uid: this.userInfo.userId,
             img_url: this.userInfo.imgUrl,
@@ -120,7 +144,17 @@ export default {
             content: "websocket已开启",
           },
         };
-        this.ImSocket.send(JSON.stringify(data));
+        const dataUser = {
+          status: 4, // 获取用户列表
+          data: {
+            uid: this.userInfo.userId,
+            img_url: this.userInfo.imgUrl,
+            room_id: this.room_id,
+            username: this.userInfo.name,
+          },
+        };
+        this.ImSocket.send(JSON.stringify(dataRoom));
+        this.ImSocket.send(JSON.stringify(dataUser));
       };
     },
     // ws消息处理
@@ -142,8 +176,12 @@ export default {
             console.log(this.chatMsgList);
             break;
           case 4: // 在线用户
+            this.userList = res.data.list || [];
+            this.userCount = res.data.count;
+            console.log(this.UserList);
             break;
           case 5: // 私聊通知
+            this.chatMsgList.push(res.data);
             break;
           default:
             console.log(res);
@@ -174,6 +212,26 @@ export default {
     // 选择房间
     SelectRoom(item) {
       this.room_id = String(item.id);
+      this.to_uid = "0";
+      this.status = 3;
+      const req = {
+        status: 1, // 进入房间
+        data: {
+          uid: this.userInfo.userId,
+          img_url: this.userInfo.imgUrl,
+          room_id: this.room_id,
+          username: this.userInfo.name,
+          content: `进入id为${this.room_id}的房间`,
+        },
+      };
+
+      this.ImSocket.send(JSON.stringify(req));
+    },
+    // 选择私聊的人
+    SelectUser(todo) {
+      this.status = 5;
+      this.to_uid = String(todo.uid);
+      this.room_id = todo.room_id;
     },
     // 发送消息
     handleSend() {
@@ -182,9 +240,10 @@ export default {
           type: "warning",
           message: "发出的信息不能为空哦",
         });
-      let data = {
-        status: 3, // 群聊发信息
+      let req = {
+        status: this.status, // 3为群聊，5为私聊
         data: {
+          time: +Date.now(),
           content: this.content,
           room_id: this.room_id,
           username: this.userInfo.name,
@@ -193,7 +252,9 @@ export default {
           to_uid: this.to_uid,
         },
       };
-      this.ImSocket.send(JSON.stringify(data));
+      this.ImSocket.send(JSON.stringify(req));
+      this.chatMsgList.push(req.data);
+      console.log(this.chatMsgList, "---");
       this.content = ""; // 消息发送后清空输入框
     },
     formatDate(timestamp) {
