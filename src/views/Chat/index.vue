@@ -256,6 +256,12 @@ export default {
       this.chatMsgList.push(req.data);
       console.log(this.chatMsgList, "---");
       this.content = ""; // 消息发送后清空输入框
+
+      const chatBox = this.$refs.chatBox;
+      // 设置滚动到底部
+      this.$nextTick(() => {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
     },
     formatDate(timestamp) {
       try {
