@@ -3,13 +3,22 @@
     <div class="chatRoom">
       <div class="leftList">
         <ul>
-          <li v-for="item in roomList" :key="item.id" @click="SelectRoom(item)">
+          <li
+            v-for="item in roomList"
+            :key="item.id"
+            @click="SelectRoom(item)"
+            :class="{ active: String(item.id) === room_id && isRoom }"
+          >
             <img :src="item.imgUrl" alt="" />
             <span>{{ item.title }}</span>
             <i>{{ userCount }}</i>
           </li>
           <div v-for="(todo, index) in userList" :key="index">
-            <li @click="SelectUser(todo)" v-if="userInfo.userId !== todo.uid">
+            <li
+              @click="SelectUser(todo)"
+              v-if="userInfo.userId !== todo.uid"
+              :class="{ active: String(todo.uid) === to_uid }"
+            >
               <img :src="todo.img_url" alt="" />
               <span>{{ todo.username }}</span>
             </li>
@@ -77,6 +86,7 @@ export default {
       UserList: [], //  用户在线用户列表
       userCount: 0, // 在线用户人数
       status: 3,
+      isRoom: true,
     };
   },
   created() {
@@ -93,6 +103,12 @@ export default {
         this.handleSend();
       }
     };
+
+    const chatBox = this.$refs.chatBox;
+    // 设置滚动到底部
+    setTimeout(() => {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 100);
   },
   unmounted() {
     this.ImSocket.close();
@@ -105,7 +121,7 @@ export default {
           url: "/api/roomList",
           method: "get",
         });
-        console.log(res);
+        // console.log(res);
         this.roomList = res.rooms;
       } catch (err) {
         console.log(err);
@@ -118,8 +134,26 @@ export default {
           url: `/api/room/${this.room_id}`,
           method: "get",
         });
-        console.log(res, "--");
+        // console.log(res, "--");
         this.chatMsgList = res.msg_list || [];
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    // 获取私聊历史记录
+    async getPrivateHistory() {
+      try {
+        let res = await this.$axios({
+          url: "/api/private-chart",
+          method: "get",
+          params: {
+            roomId: this.room_id,
+            uid: this.userInfo.userId,
+            to_uid: this.to_uid,
+          },
+        });
+        // console.log(res);
+        this.chatMsgList = res.msg_List || [];
       } catch (err) {
         console.log(err);
       }
@@ -171,9 +205,10 @@ export default {
             break;
           case 2: // 离开房间
             break;
-          case 3: // 接受消息
-            this.chatMsgList.push(res.data);
-            console.log(this.chatMsgList);
+          case 3: // 接受群消息
+            if (this.to_uid === "0") {
+              this.chatMsgList.push(res.data);
+            }
             break;
           case 4: // 在线用户
             this.userList = res.data.list || [];
@@ -181,7 +216,9 @@ export default {
             console.log(this.UserList);
             break;
           case 5: // 私聊通知
-            this.chatMsgList.push(res.data);
+            if (this.to_uid !== "0") {
+              this.chatMsgList.push(res.data);
+            }
             break;
           default:
             console.log(res);
@@ -214,6 +251,7 @@ export default {
       this.room_id = String(item.id);
       this.to_uid = "0";
       this.status = 3;
+      this.isRoom = true;
       const req = {
         status: 1, // 进入房间
         data: {
@@ -226,12 +264,15 @@ export default {
       };
 
       this.ImSocket.send(JSON.stringify(req));
+      this.getRoomHistory(); // 获取群聊历史记录
     },
     // 选择私聊的人
     SelectUser(todo) {
       this.status = 5;
       this.to_uid = String(todo.uid);
       this.room_id = todo.room_id;
+      this.isRoom = false;
+      this.getPrivateHistory(); // 获取私聊历史记录
     },
     // 发送消息
     handleSend() {
@@ -263,6 +304,7 @@ export default {
         chatBox.scrollTop = chatBox.scrollHeight;
       });
     },
+    // 时间格式化
     formatDate(timestamp) {
       try {
         if (typeof timestamp === "string") return timestamp;

@@ -27,6 +27,7 @@
         background: hsla(0, 0%, 100%, 0.3);
         box-shadow: 0 0 0 1px hsla(0, 0%, 100%, 0.3) inset, 0 0.5em 1em rgba(0, 0, 0, 0.6);
         text-shadow: 0 1px 1px hsla(0, 0%, 100%, 0.3);
+        overflow: hidden;
         &::before {
             content: "";
             position: absolute;
@@ -43,12 +44,15 @@
             border-right: 1px #778b76 solid;
             ul {
                 list-style: none;
-                padding: 0 10px;
+                .active {
+                    background: rgba(226, 238, 230, 0.75);
+                }
                 li {
                     height: 60px;
                     display: flex;
                     align-items: center;
                     border-bottom: 1px #778b76 solid;
+                    padding: 0 10px;
                     cursor: pointer;
                     img {
                         width: 50px;
