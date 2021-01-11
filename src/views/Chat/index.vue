@@ -11,7 +11,6 @@
           >
             <img :src="item.imgUrl" alt="" />
             <span>{{ item.title }}</span>
-            <i>{{ userCount }}</i>
           </li>
           <div v-for="(todo, index) in userList" :key="index">
             <li
@@ -26,7 +25,16 @@
         </ul>
       </div>
       <div class="rightRoom">
-        <div class="roomTop">这个头部</div>
+        <div class="roomTop">
+          <p v-if="to_uid === '0'">
+            正在<span style="color: #ad1341">{{ roomTitle }}</span
+            >中聊天 <i>在线人数：{{ userCount }} 人</i>
+          </p>
+          <p v-else>
+            正在与<span style="color: #ad1341">{{ roomTitle }}</span
+            >聊天
+          </p>
+        </div>
         <div class="middleRoom" ref="chatBox">
           <ul v-if="chatMsgList.length !== 0">
             <li
@@ -87,6 +95,7 @@ export default {
       userCount: 0, // 在线用户人数
       status: 3,
       isRoom: true,
+      roomTitle: "聊天室1",
     };
   },
   created() {
@@ -103,12 +112,6 @@ export default {
         this.handleSend();
       }
     };
-
-    const chatBox = this.$refs.chatBox;
-    // 设置滚动到底部
-    setTimeout(() => {
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }, 100);
   },
   unmounted() {
     this.ImSocket.close();
@@ -136,6 +139,7 @@ export default {
         });
         // console.log(res, "--");
         this.chatMsgList = res.msg_list || [];
+        this.srollToBottom();
       } catch (err) {
         console.log(err);
       }
@@ -154,9 +158,18 @@ export default {
         });
         // console.log(res);
         this.chatMsgList = res.msg_List || [];
+        this.srollToBottom();
       } catch (err) {
         console.log(err);
       }
+    },
+    // 滚动条滑到底部
+    srollToBottom() {
+      const chatBox = this.$refs.chatBox;
+      // 设置滚动到底部
+      this.$nextTick(() => {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
     },
     // 初始化IM
     initIM() {
@@ -206,7 +219,7 @@ export default {
           case 2: // 离开房间
             break;
           case 3: // 接受群消息
-            if (this.to_uid === "0") {
+            if (this.to_uid === "0" && this.room_id === res.data.room_id) {
               this.chatMsgList.push(res.data);
             }
             break;
@@ -216,7 +229,7 @@ export default {
             console.log(this.UserList);
             break;
           case 5: // 私聊通知
-            if (this.to_uid !== "0") {
+            if (this.to_uid === String(res.data.uid)) {
               this.chatMsgList.push(res.data);
             }
             break;
@@ -224,12 +237,9 @@ export default {
             console.log(res);
         }
 
-        const chatBox = this.$refs.chatBox;
         // 设置滚动到底部
         if (status) {
-          this.$nextTick(() => {
-            chatBox.scrollTop = chatBox.scrollHeight;
-          });
+          this.srollToBottom();
         }
       };
     },
@@ -248,9 +258,10 @@ export default {
     },
     // 选择房间
     SelectRoom(item) {
+      this.roomTitle = item.title;
       this.room_id = String(item.id);
       this.to_uid = "0";
-      this.status = 3;
+      this.status = 3; //群聊
       this.isRoom = true;
       const req = {
         status: 1, // 进入房间
@@ -268,7 +279,8 @@ export default {
     },
     // 选择私聊的人
     SelectUser(todo) {
-      this.status = 5;
+      this.roomTitle = todo.username;
+      this.status = 5; // 私聊
       this.to_uid = String(todo.uid);
       this.room_id = todo.room_id;
       this.isRoom = false;
@@ -298,11 +310,7 @@ export default {
       console.log(this.chatMsgList, "---");
       this.content = ""; // 消息发送后清空输入框
 
-      const chatBox = this.$refs.chatBox;
-      // 设置滚动到底部
-      this.$nextTick(() => {
-        chatBox.scrollTop = chatBox.scrollHeight;
-      });
+      this.srollToBottom();
     },
     // 时间格式化
     formatDate(timestamp) {

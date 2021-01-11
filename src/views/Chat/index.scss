@@ -73,6 +73,17 @@
                 height: 50px;
                 line-height: 50px;
                 border-bottom: 1px #778b76 solid;
+                p {
+                    margin: 0 15px;
+                    span {
+                        margin: 0 5px;
+                    }
+                }
+                i {
+                    font-style: normal;
+                    font-size: 12px;
+                    margin-left: 20px;
+                }
             }
             .roomBottom {
                 display: flex;
