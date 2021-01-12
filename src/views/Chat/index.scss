@@ -27,7 +27,6 @@
         background: hsla(0, 0%, 100%, 0.3);
         box-shadow: 0 0 0 1px hsla(0, 0%, 100%, 0.3) inset, 0 0.5em 1em rgba(0, 0, 0, 0.6);
         text-shadow: 0 1px 1px hsla(0, 0%, 100%, 0.3);
-        overflow: hidden;
         backdrop-filter: blur(5px); // 形成毛玻璃效果
         .leftList {
             width: 200px;
@@ -39,6 +38,7 @@
                     background: rgba(226, 238, 230, 0.75);
                 }
                 li {
+                    position: relative;
                     height: 60px;
                     display: flex;
                     align-items: center;
@@ -53,6 +53,11 @@
                     }
                     span {
                         margin-left: 10px;
+                    }
+                    .item {
+                        position: absolute;
+                        right: 15px;
+                        border: none;
                     }
                 }
             }
@@ -93,6 +98,27 @@
                     color: #f16767;
                     margin: 0 5px;
                     cursor: pointer;
+                }
+                .emojiBox {
+                    position: absolute;
+                    right: 0;
+                    bottom: -210px;
+                    width: 800px;
+                    background: hsla(0, 0%, 100%, 0.3);
+                    backdrop-filter: blur(3px); // 形成毛玻璃效果
+                    border-radius: 5px;
+                    padding: 2px;
+                    box-sizing: border-box;
+                    span {
+                        display: inline-block;
+                        width: 28px;
+                        margin: 1px;
+                        img {
+                            width: 100%;
+                            object-fit: cover;
+                            cursor: pointer;
+                        }
+                    }
                 }
             }
             .middleRoom {
@@ -185,6 +211,15 @@
                             span {
                                 font-size: 12px;
                             }
+                            p {
+                                display: flex;
+                                align-items: center;
+                                .emoji {
+                                    width: 26px;
+                                    object-fit: cover;
+                                }
+                            }
+
                             &::before {
                                 content: "";
                                 width: 16px;
