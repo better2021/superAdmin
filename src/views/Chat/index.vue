@@ -9,7 +9,7 @@
             @click="SelectRoom(item, index)"
             :class="{ active: String(item.id) === room_id && isRoom }"
           >
-            <img :src="item.imgUrl" alt="" />
+            <img v-lazy="item.imgUrl" alt="" />
             <span>{{ item.title }}</span>
             <el-badge
               v-if="unreadRoom[index] !== 0"
