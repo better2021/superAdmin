@@ -1,241 +1,255 @@
 #chat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+  position: relative;
+  background: hsla(0, 0%, 100%, 0.2);
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("/images/bizhi01.jpg") no-repeat;
+    background-size: cover;
+    filter: blur(2px);
+    z-index: -1;
+  }
+  .chatRoom {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 85vh;
+    width: 800px;
+    height: 500px;
+    margin: 0 auto;
+    border-radius: 10px;
     position: relative;
-    background: hsla(0, 0%, 100%, 0.2);
-    &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("/images/bizhi01.jpg") no-repeat;
-        background-size: cover;
-        filter: blur(2px);
-        z-index: -1;
-    }
-    .chatRoom {
-        display: flex;
-        width: 800px;
-        height: 500px;
-        margin: 0 auto;
-        border-radius: 10px;
-        position: relative;
-        background: hsla(0, 0%, 100%, 0.3);
-        box-shadow: 0 0 0 1px hsla(0, 0%, 100%, 0.3) inset, 0 0.5em 1em rgba(0, 0, 0, 0.6);
-        text-shadow: 0 1px 1px hsla(0, 0%, 100%, 0.3);
-        backdrop-filter: blur(5px); // 形成毛玻璃效果
-        .leftList {
-            width: 200px;
-            height: 100%;
-            border-right: 1px #778b76 solid;
-            ul {
-                list-style: none;
-                .active {
-                    background: rgba(226, 238, 230, 0.75);
-                }
-                li {
-                    position: relative;
-                    height: 60px;
-                    display: flex;
-                    align-items: center;
-                    border-bottom: 1px #778b76 solid;
-                    padding: 0 10px;
-                    cursor: pointer;
-                    img {
-                        width: 50px;
-                        height: 50px;
-                        border-radius: 50%;
-                        object-fit: cover;
-                    }
-                    span {
-                        margin-left: 10px;
-                    }
-                    .item {
-                        position: absolute;
-                        right: 15px;
-                        border: none;
-                    }
-                }
-            }
+    background: hsla(0, 0%, 100%, 0.3);
+    box-shadow: 0 0 0 1px hsla(0, 0%, 100%, 0.3) inset, 0 0.5em 1em rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1px 1px hsla(0, 0%, 100%, 0.3);
+    backdrop-filter: blur(5px); // 形成毛玻璃效果
+    .leftList {
+      width: 200px;
+      height: 100%;
+      border-right: 1px #778b76 solid;
+      ul {
+        list-style: none;
+        .active {
+          background: rgba(226, 238, 230, 0.75);
         }
-        .rightRoom {
-            flex: 1;
-            position: relative;
-            .roomTop {
-                height: 50px;
-                line-height: 50px;
-                border-bottom: 1px #778b76 solid;
-                p {
-                    margin: 0 15px;
-                    span {
-                        margin: 0 5px;
-                    }
-                }
-                i {
-                    font-style: normal;
-                    font-size: 12px;
-                    margin-left: 20px;
-                }
+        li {
+          position: relative;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          border-bottom: 1px #778b76 solid;
+          padding: 0 10px;
+          cursor: pointer;
+          img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+          span {
+            margin-left: 10px;
+          }
+          .item {
+            position: absolute;
+            right: 15px;
+            border: none;
+          }
+        }
+      }
+    }
+    .rightRoom {
+      flex: 1;
+      position: relative;
+      .roomTop {
+        height: 50px;
+        line-height: 50px;
+        border-bottom: 1px #778b76 solid;
+        p {
+          margin: 0 15px;
+          span {
+            margin: 0 5px;
+          }
+        }
+        i {
+          font-style: normal;
+          font-size: 12px;
+          margin-left: 20px;
+        }
+      }
+      .roomBottom {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 50px;
+        border-top: 1px #778b76 solid;
+        position: absolute;
+        bottom: 0;
+        #file {
+          width: 36px;
+          height: 36px;
+          position: absolute;
+          left: 5px;
+          z-index: 99;
+          opacity: 0;
+          cursor: pointer;
+        }
+        .img {
+          width: 36px;
+          margin: 0 5px;
+          cursor: pointer;
+        }
+        .send {
+          font-size: 24px;
+          color: #f16767;
+          margin: 0 5px;
+          cursor: pointer;
+        }
+        .emojiBox {
+          position: absolute;
+          right: 0;
+          bottom: -210px;
+          width: 800px;
+          background: hsla(0, 0%, 100%, 0.3);
+          backdrop-filter: blur(3px); // 形成毛玻璃效果
+          border-radius: 5px;
+          padding: 2px;
+          box-sizing: border-box;
+          span {
+            display: inline-block;
+            width: 28px;
+            margin: 1px;
+            img {
+              width: 100%;
+              object-fit: cover;
+              cursor: pointer;
             }
-            .roomBottom {
+          }
+        }
+      }
+      .middleRoom {
+        box-sizing: border-box;
+        height: 396px;
+        overflow-y: auto;
+        /*滚动条整体部分*/
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 3px;
+          background: #fcfae9;
+        }
+        /*滚动条里面可以拖动的那个*/
+        &::-webkit-scrollbar-thumb {
+          border-radius: 3px;
+          background-color: #1d9c0c;
+          background-image: -webkit-linear-gradient(
+            45deg,
+            hsla(0, 0%, 100%, 0.4) 25%,
+            transparent 0,
+            transparent 50%,
+            hsla(0, 0%, 100%, 0.4) 0,
+            hsla(0, 0%, 100%, 0.4) 75%,
+            transparent 0,
+            transparent
+          );
+        }
+        /* 外层轨道*/
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+        ul {
+          list-style: none;
+          padding: 5px;
+          .self {
+            flex-flow: row-reverse;
+            .msgBox {
+              margin-right: 15px;
+              &::before {
+                position: absolute;
+                right: -7px; /*向左侧外部延伸箭头box的一半宽度*/
+              }
+              span {
+                color: rgb(2, 63, 5);
+              }
+              .time {
+                margin-left: 10px;
+              }
+            }
+          }
+          .other {
+            .msgBox {
+              margin-left: 15px;
+              background: #2089a5;
+              color: #f1f1f1;
+              &::before {
+                position: absolute;
+                left: -7px; /*向左侧外部延伸箭头box的一半宽度*/
+              }
+              span {
+                color: #023241;
+              }
+              .time {
+                margin-left: 10px;
+              }
+            }
+          }
+          li {
+            display: flex;
+            margin: 10px 0;
+            align-items: center;
+            .imgUrl {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+            .msgBox {
+              max-width: 300px;
+              line-height: 24px;
+              background: rgb(11, 179, 19);
+              border-bottom-color: rgb(11, 179, 19); /*为了给after伪元素自动继承*/
+              padding: 5px 12px;
+              border-radius: 8px;
+              font-size: 14px;
+              box-sizing: border-box;
+              word-break: break-all;
+              position: relative;
+              z-index: 99;
+              span {
+                font-size: 12px;
+              }
+              p {
                 display: flex;
                 align-items: center;
-                width: 100%;
-                height: 50px;
-                border-top: 1px #778b76 solid;
-                position: absolute;
-                bottom: 0;
-                .img {
-                    width: 36px;
-                    margin: 0 5px;
+                .emoji {
+                  width: 26px;
+                  object-fit: cover;
                 }
-                .send {
-                    font-size: 24px;
-                    color: #f16767;
-                    margin: 0 5px;
-                    cursor: pointer;
-                }
-                .emojiBox {
-                    position: absolute;
-                    right: 0;
-                    bottom: -210px;
-                    width: 800px;
-                    background: hsla(0, 0%, 100%, 0.3);
-                    backdrop-filter: blur(3px); // 形成毛玻璃效果
-                    border-radius: 5px;
-                    padding: 2px;
-                    box-sizing: border-box;
-                    span {
-                        display: inline-block;
-                        width: 28px;
-                        margin: 1px;
-                        img {
-                            width: 100%;
-                            object-fit: cover;
-                            cursor: pointer;
-                        }
-                    }
-                }
-            }
-            .middleRoom {
-                box-sizing: border-box;
-                height: 396px;
-                overflow-y: auto;
-                /*滚动条整体部分*/
-                &::-webkit-scrollbar {
-                    width: 5px;
-                    height: 3px;
-                    background: #fcfae9;
-                }
-                /*滚动条里面可以拖动的那个*/
-                &::-webkit-scrollbar-thumb {
-                    border-radius: 3px;
-                    background-color: #1d9c0c;
-                    background-image: -webkit-linear-gradient(
-                        45deg,
-                        hsla(0, 0%, 100%, 0.4) 25%,
-                        transparent 0,
-                        transparent 50%,
-                        hsla(0, 0%, 100%, 0.4) 0,
-                        hsla(0, 0%, 100%, 0.4) 75%,
-                        transparent 0,
-                        transparent
-                    );
-                }
-                /* 外层轨道*/
-                &::-webkit-scrollbar-track {
-                    background-color: transparent;
-                }
-                ul {
-                    list-style: none;
-                    padding: 5px;
-                    .self {
-                        flex-flow: row-reverse;
-                        .msgBox {
-                            margin-right: 15px;
-                            &::before {
-                                position: absolute;
-                                right: -7px; /*向左侧外部延伸箭头box的一半宽度*/
-                            }
-                            span {
-                                color: rgb(2, 63, 5);
-                            }
-                            .time {
-                                margin-left: 10px;
-                            }
-                        }
-                    }
-                    .other {
-                        .msgBox {
-                            margin-left: 15px;
-                            background: #2089a5;
-                            color: #f1f1f1;
-                            &::before {
-                                position: absolute;
-                                left: -7px; /*向左侧外部延伸箭头box的一半宽度*/
-                            }
-                            span {
-                                color: #023241;
-                            }
-                            .time {
-                                margin-left: 10px;
-                            }
-                        }
-                    }
-                    li {
-                        display: flex;
-                        margin: 10px 0;
-                        align-items: center;
-                        .imgUrl {
-                            width: 40px;
-                            height: 40px;
-                            border-radius: 50%;
-                            object-fit: cover;
-                        }
-                        .msgBox {
-                            max-width: 300px;
-                            line-height: 24px;
-                            background: rgb(11, 179, 19);
-                            border-bottom-color: rgb(11, 179, 19); /*为了给after伪元素自动继承*/
-                            padding: 5px 12px;
-                            border-radius: 8px;
-                            font-size: 14px;
-                            box-sizing: border-box;
-                            word-break: break-all;
-                            position: relative;
-                            z-index: 99;
-                            span {
-                                font-size: 12px;
-                            }
-                            p {
-                                display: flex;
-                                align-items: center;
-                                .emoji {
-                                    width: 26px;
-                                    object-fit: cover;
-                                }
-                            }
+              }
+              .image_url {
+                width: 150px;
+                object-fit: cover;
+              }
 
-                            &::before {
-                                content: "";
-                                width: 16px;
-                                height: 16px;
-                                background: inherit;
+              &::before {
+                content: "";
+                width: 16px;
+                height: 16px;
+                background: inherit;
 
-                                transform: rotate(45deg); // 旋转45度
-                                top: 50%;
-                                margin-top: -8px;
-                                border-radius: 3px;
-                                z-index: 90;
-                            }
-                        }
-                    }
-                }
+                transform: rotate(45deg); // 旋转45度
+                top: 50%;
+                margin-top: -8px;
+                border-radius: 3px;
+                z-index: 90;
+              }
             }
+          }
         }
+      }
     }
+  }
 }

@@ -61,13 +61,20 @@
                   <span class="time">{{ formatDate(item.time || item.createAt) }}</span>
                 </h5>
                 <p v-html="toHtml(item.content)"></p>
+                <img
+                  v-if="item.image_url"
+                  :src="item.image_url"
+                  class="image_url"
+                  alt=""
+                />
               </div>
             </li>
           </ul>
         </div>
         <div class="roomBottom">
-          <img src="/images/image.png" class="img" alt="" />
-          <img src="/images/happy.png" class="img" alt="" @click="handleVisible" />
+          <input type="file" name="file" id="file" @change="sendImgs" />
+          <img src="/images/image.png" class="img" alt="图片" />
+          <img src="/images/happy.png" class="img" alt="表情" @click="handleVisible" />
           <el-input
             type="text"
             placeholder="请输入内容"
@@ -355,6 +362,44 @@ export default {
 
       this.emojiShow = false;
       this.srollToBottom();
+    },
+    // 发送图片
+    async sendImgs(e) {
+      e.preventDefault();
+      console.log(e.target.files);
+      const files = e.target.files;
+      let data = new FormData();
+      data.append("file", files[0]);
+      try {
+        let res = await this.$axios({
+          url: "/api/uploads",
+          method: "post",
+          data,
+        });
+        console.log(res);
+        if (res.code === 200) {
+          res.images.forEach((element) => {
+            const message = {
+              status: this.status, // 3为群聊，5为私聊
+              data: {
+                time: +Date.now(),
+                content: this.content,
+                room_id: this.room_id,
+                username: this.userInfo.name,
+                uid: this.userInfo.userId,
+                img_url: this.userInfo.imgUrl,
+                to_uid: this.to_uid,
+                chatIndex: this.chatIndex++,
+                image_url: element,
+              },
+            };
+            this.ImSocket.send(JSON.stringify(message));
+            this.chatMsgList.push(message.data);
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     },
     // 时间格式化
     formatDate(timestamp) {
