@@ -6,22 +6,12 @@
         当前浏览器不支持canvas，请更换浏览器后再试
       </canvas>
     </div>
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="login-ruleForm"
-    >
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="login-ruleForm">
       <el-form-item label="账号" prop="telephone">
         <el-input v-model="ruleForm.telephone" prefix-icon="el-icon-user"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input
-          v-model="ruleForm.password"
-          :type="passwordType ? 'password' : 'text'"
-          prefix-icon="el-icon-lock"
-        >
+        <el-input v-model="ruleForm.password" :type="passwordType ? 'password' : 'text'" prefix-icon="el-icon-lock">
         </el-input>
         <span class="show-pwd" @click="showPwd">
           <img :src="iconPath(passwordType ? 'eye' : 'eye-open')" class="svg-icon" />
@@ -38,17 +28,15 @@
         <el-button type="primary" @click="submitForm('ruleForm')">登陆</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
-      <div class="tips">
-        如果没有账号，请点击<span @click="jumpRegister">注册</span>哦
-      </div>
+      <div class="tips">如果没有账号，请点击<span @click="jumpRegister">注册</span>哦</div>
     </el-form>
   </div>
 </template>
 
 <script>
+import clock from "/@/utils/clock";
+import fire from "/@/utils/fire";
 import { fromData } from "/@/utils/util";
-import { clock } from "/@/utils/clock";
-import { fire } from "/@/utils/fire";
 
 export default {
   data() {

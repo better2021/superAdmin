@@ -11,12 +11,7 @@
           >
             <img v-lazy="item.imgUrl" alt="" />
             <span>{{ item.title }}</span>
-            <el-badge
-              v-if="unreadRoom[index] !== 0"
-              :value="unreadRoom[index]"
-              class="item"
-              type="success"
-            ></el-badge>
+            <el-badge v-if="unreadRoom[index] !== 0" :value="unreadRoom[index]" class="item" type="success"></el-badge>
           </li>
           <div v-for="(todo, index) in userList" :key="index">
             <li
@@ -61,12 +56,7 @@
                   <span class="time">{{ formatDate(item.time || item.createAt) }}</span>
                 </h5>
                 <p v-html="toHtml(item.content)"></p>
-                <img
-                  v-if="item.image_url"
-                  :src="item.image_url"
-                  class="image_url"
-                  alt=""
-                />
+                <img v-if="item.image_url" :src="item.image_url" class="image_url" alt="" />
               </div>
             </li>
           </ul>
@@ -75,13 +65,7 @@
           <input type="file" name="file" id="file" @change="sendImgs" />
           <img src="/images/image.png" class="img" alt="图片" />
           <img src="/images/happy.png" class="img" alt="表情" @click="handleVisible" />
-          <el-input
-            type="text"
-            placeholder="请输入内容"
-            v-model="content"
-            class="textContent"
-            ref="elInput"
-          >
+          <el-input type="text" placeholder="请输入内容" v-model="content" class="textContent" ref="elInput">
           </el-input>
           <i class="el-icon-s-promotion send" @click="handleSend"></i>
           <!-- emijo表情 -->
@@ -99,6 +83,8 @@
 <script>
 import WebsocketHeartbeatJs from "websocket-heartbeat-js";
 import emoji from "/@/assets/emoji.json";
+import { encodeMsg, decodeMsg } from "/@/utils/deCode";
+import xss from "xss";
 
 export default {
   data() {
@@ -131,6 +117,7 @@ export default {
     };
   },
   created() {
+    console.log(encodeMsg, decodeMsg);
     this.getRoomList();
     this.getRoomHistory();
     this.ImSocket = new WebsocketHeartbeatJs(this.options);
@@ -238,8 +225,8 @@ export default {
             username: this.userInfo.name,
           },
         };
-        this.ImSocket.send(JSON.stringify(dataRoom));
-        this.ImSocket.send(JSON.stringify(dataUser));
+        this.ImSocket.send(encodeMsg(JSON.stringify(dataRoom)));
+        this.ImSocket.send(encodeMsg(JSON.stringify(dataUser)));
       };
     },
     // ws消息处理
@@ -342,11 +329,17 @@ export default {
           type: "warning",
           message: "发出的信息不能为空哦",
         });
+
+      const options = {
+        whiteList: {
+          a: [],
+        },
+      };
       let req = {
         status: this.status, // 3为群聊，5为私聊
         data: {
           time: +Date.now(),
-          content: this.content,
+          content: xss.filterXSS(this.content.replace(/</g, "&lt;").replace(/>/g, "&gt;"), options),
           room_id: this.room_id,
           username: this.userInfo.name,
           uid: this.userInfo.userId,
@@ -355,7 +348,7 @@ export default {
           chatIndex: this.chatIndex++,
         },
       };
-      this.ImSocket.send(JSON.stringify(req));
+      this.ImSocket.send(encodeMsg(JSON.stringify(req))); // 发送加密后的信息
       this.chatMsgList.push(req.data);
       console.log(this.chatMsgList, "---");
       this.content = ""; // 消息发送后清空输入框
@@ -410,13 +403,9 @@ export default {
         const m = date.getMonth() + 1;
         const d = date.getDate();
         const hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-        const minute =
-          date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-        const second =
-          date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-        return `${y}/${m < 10 ? "0" + m : m}/${
-          d < 10 ? "0" + d : d
-        } ${hour}:${minute}:${second}`;
+        const minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+        const second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+        return `${y}/${m < 10 ? "0" + m : m}/${d < 10 ? "0" + d : d} ${hour}:${minute}:${second}`;
       } catch (err) {
         console.log(err);
       }

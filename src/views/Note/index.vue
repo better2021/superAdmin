@@ -76,6 +76,7 @@ import VuePictureSwipe from "vue-picture-swipe";
 import Uploads from "/@/components/Uploads/index.vue";
 import Pagination from "/@/components/Pagination/index.vue";
 import emoji from "/@/assets/emoji.json";
+import xss from "xss";
 import { defineComponent, ref, getCurrentInstance, onMounted, reactive } from "vue";
 import { useStore } from "vuex";
 
@@ -257,6 +258,12 @@ export default defineComponent({
         return;
       }
 
+      const options = {
+        whiteList: {
+          a: [],
+        },
+      };
+
       let res = await proxy.$axios({
         method: "post",
         url: "/api/notes",
@@ -265,7 +272,7 @@ export default defineComponent({
           icon,
           userId,
           images: images.value.join(","),
-          context: textarea.value,
+          context: xss.filterXSS(textarea.value, options),
         },
       });
 
