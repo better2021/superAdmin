@@ -56,13 +56,15 @@
                   <span class="time">{{ formatDate(item.time || item.createAt) }}</span>
                 </h5>
                 <p v-html="toHtml(item.content)"></p>
-                <img v-if="item.image_url" :src="item.image_url" class="image_url" alt="" />
+                <div v-if="item.image_url" style="width: 160px">
+                  <img v-for="todo in item.image_url.split(',')" :src="todo" :key="todo" class="image_url" alt="" />
+                </div>
               </div>
             </li>
           </ul>
         </div>
         <div class="roomBottom">
-          <input type="file" name="file" id="file" @change="sendImgs" />
+          <input type="file" name="file" id="file" multiple="multiple" @change="sendImgs" />
           <img src="/images/image.png" class="img" alt="图片" />
           <img src="/images/happy.png" class="img" alt="表情" @click="handleVisible" />
           <el-input type="text" placeholder="请输入内容" v-model="content" class="textContent" ref="elInput">
@@ -94,7 +96,7 @@ export default {
         pingTimeout: 8000, // 每隔8秒发送一次心跳，如果收到任何后端消息定时器将会重置
         pongTimeout: 10000, // ping消息发送之后，10秒内没收到后端消息便会认为连接断开
         reconnectTimeout: 2000, // 尝试重连的间隔时间
-        pingMsg: "heartbeat", // ping消息值
+        pingMsg: encodeMsg("heartbeat"), // ping消息值
         repeatLimit: 3, // 重连尝试次数
       },
       roomList: [],
@@ -117,7 +119,6 @@ export default {
     };
   },
   created() {
-    console.log(encodeMsg, decodeMsg);
     this.getRoomList();
     this.getRoomHistory();
     this.ImSocket = new WebsocketHeartbeatJs(this.options);
@@ -227,6 +228,7 @@ export default {
         };
         this.ImSocket.send(encodeMsg(JSON.stringify(dataRoom)));
         this.ImSocket.send(encodeMsg(JSON.stringify(dataUser)));
+        console.log(JSON.stringify(dataRoom));
       };
     },
     // ws消息处理
@@ -362,7 +364,10 @@ export default {
       console.log(e.target.files);
       const files = e.target.files;
       let data = new FormData();
-      data.append("file", files[0]);
+      Array.from(files).forEach((v) => {
+        data.append("file", v);
+      });
+
       try {
         let res = await this.$axios({
           url: "/api/uploads",
@@ -371,24 +376,23 @@ export default {
         });
         console.log(res);
         if (res.code === 200) {
-          res.images.forEach((element) => {
-            const message = {
-              status: this.status, // 3为群聊，5为私聊
-              data: {
-                time: +Date.now(),
-                content: this.content,
-                room_id: this.room_id,
-                username: this.userInfo.name,
-                uid: this.userInfo.userId,
-                img_url: this.userInfo.imgUrl,
-                to_uid: this.to_uid,
-                chatIndex: this.chatIndex++,
-                image_url: element,
-              },
-            };
-            this.ImSocket.send(JSON.stringify(message));
-            this.chatMsgList.push(message.data);
-          });
+          const message = {
+            status: this.status, // 3为群聊，5为私聊
+            data: {
+              time: +Date.now(),
+              content: this.content,
+              room_id: this.room_id,
+              username: this.userInfo.name,
+              uid: this.userInfo.userId,
+              img_url: this.userInfo.imgUrl,
+              to_uid: this.to_uid,
+              chatIndex: this.chatIndex++,
+              image_url: res.images.join(","),
+            },
+          };
+          this.ImSocket.send(JSON.stringify(message));
+          this.chatMsgList.push(message.data);
+          this.srollToBottom();
         }
       } catch (err) {
         console.log(err);
