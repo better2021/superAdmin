@@ -19,7 +19,7 @@
               v-if="userInfo.userId !== todo.uid"
               :class="{ active: String(todo.uid) === to_uid }"
             >
-              <img :src="todo.img_url" alt="" />
+              <img v-lazy="todo.img_url" alt="" />
               <span>{{ todo.username }}</span>
               <el-badge
                 v-if="unreadUser[index] !== 0"
@@ -45,11 +45,11 @@
         <div class="middleRoom" ref="chatBox">
           <ul v-if="chatMsgList.length !== 0">
             <li
-              v-for="(item, index) in chatMsgList"
-              :key="index"
+              v-for="item in chatMsgList"
+              :key="item.id"
               :class="[userInfo.userId === (item.uid || item.user_id) ? 'self' : 'other']"
             >
-              <img :src="item.img_url" class="imgUrl" />
+              <img v-lazy="item.img_url" class="imgUrl" />
               <div class="msgBox">
                 <h5>
                   <span>{{ item.username || item.user_name }}</span>
@@ -57,7 +57,7 @@
                 </h5>
                 <p v-html="toHtml(item.content)"></p>
                 <div v-if="item.image_url" style="width: 160px">
-                  <img v-for="todo in item.image_url.split(',')" :src="todo" :key="todo" class="image_url" alt="" />
+                  <img v-for="todo in item.image_url.split(',')" v-lazy="todo" :key="todo" class="image_url" alt="" />
                 </div>
               </div>
             </li>
@@ -228,15 +228,15 @@ export default {
         };
         this.ImSocket.send(encodeMsg(JSON.stringify(dataRoom)));
         this.ImSocket.send(encodeMsg(JSON.stringify(dataUser)));
-        console.log(JSON.stringify(dataRoom));
+        // console.log(JSON.stringify(dataRoom));
       };
     },
     // ws消息处理
     wsMessage() {
       this.ImSocket.onmessage = (event) => {
-        const res = JSON.parse(event.data);
+        const res = JSON.parse(decodeMsg(event.data)); // 解密消息
         let status = res.status;
-
+        console.log(`%c 接收的消息：${JSON.stringify(res)}`, "color:#ff6600");
         switch (status) {
           case -1: // 断开连接
             this.ImSocket.close();
@@ -268,7 +268,7 @@ export default {
             }
             break;
           default:
-            console.log(res);
+          // console.log(res);
         }
 
         // 设置滚动到底部
@@ -310,7 +310,7 @@ export default {
         },
       };
 
-      this.ImSocket.send(JSON.stringify(req));
+      this.ImSocket.send(encodeMsg(JSON.stringify(req)));
       this.getRoomHistory(); // 获取群聊历史记录
     },
     // 选择私聊的人
@@ -352,7 +352,7 @@ export default {
       };
       this.ImSocket.send(encodeMsg(JSON.stringify(req))); // 发送加密后的信息
       this.chatMsgList.push(req.data);
-      console.log(this.chatMsgList, "---");
+      console.log(`%c发送的消息：${JSON.stringify(req)}`, "color:#009688");
       this.content = ""; // 消息发送后清空输入框
 
       this.emojiShow = false;
@@ -390,7 +390,7 @@ export default {
               image_url: res.images.join(","),
             },
           };
-          this.ImSocket.send(JSON.stringify(message));
+          this.ImSocket.send(encodeMsg(JSON.stringify(message)));
           this.chatMsgList.push(message.data);
           this.srollToBottom();
         }

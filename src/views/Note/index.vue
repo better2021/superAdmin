@@ -1,33 +1,21 @@
 <template>
   <div id="note">
     <div class="inputBox">
-      <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="textarea">
-      </el-input>
+      <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="textarea"> </el-input>
       <div class="btnBox">
         <span>
           <img src="/images/image.png" class="img" alt="" @click="handleShow" />
           <img src="/images/happy.png" class="img" alt="" @click="handleVisible" />
         </span>
-        <el-button type="primary" icon="el-icon-position" size="small" @click="handleSend"
-          >发表动态</el-button
-        >
+        <el-button type="primary" icon="el-icon-position" size="small" @click="handleSend">发表动态</el-button>
 
         <div v-show="state.emojiShow" class="emojiBox">
-          <span
-            v-for="item in state.emojiList"
-            :key="item.name"
-            @click="handleEmoji(item)"
-          >
+          <span v-for="item in state.emojiList" :key="item.name" @click="handleEmoji(item)">
             <img :src="`/emoji/${item.name}.png`" />
           </span>
         </div>
       </div>
-      <Uploads
-        :imgSize="1500"
-        :visible="isShow"
-        @handleSuccess="uploadSuccess"
-        ref="uploadFiles"
-      ></Uploads>
+      <Uploads :imgSize="1500" :visible="isShow" @handleSuccess="uploadSuccess" ref="uploadFiles"></Uploads>
     </div>
 
     <div class="listBox" v-loading="loading" element-loading-text="拼命加载中">
@@ -47,12 +35,7 @@
             ></el-button>
           </div>
           <div v-if="!!item.images" class="images">
-            <img
-              v-for="todo in item.images.split(',')"
-              :key="todo"
-              v-lazy="todo"
-              alt=""
-            />
+            <img v-for="todo in item.images.split(',')" :key="todo" v-lazy="todo" alt="" />
           </div>
           <p class="content" v-html="toHtml(item.context)"></p>
         </li>

@@ -6,20 +6,11 @@
           <i class="el-input__icon el-icon-search"></i>
         </template>
       </el-input>
-      <el-button type="primary" icon="el-icon-search" @click="handleSearch"
-        >搜索</el-button
-      >
+      <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       <el-button type="success" @click="handleReset">重置</el-button>
     </div>
 
-    <el-table
-      :data="tableData"
-      border
-      stripe
-      class="tableBox"
-      v-loading="loading"
-      element-loading-text="拼命加载中"
-    >
+    <el-table :data="tableData" border stripe class="tableBox" v-loading="loading" element-loading-text="拼命加载中">
       <el-table-column prop="name" label="呢称" width="180"> </el-table-column>
 
       <el-table-column label="头像" width="180">
@@ -40,12 +31,8 @@
       </el-table-column>
       <el-table-column label="操作" v-if="Number(userId) === 1">
         <template v-slot="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)"
-            >编辑</el-button
-          >
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)"
-            >删除</el-button
-          >
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -65,11 +52,7 @@
             <el-input v-model="fromData.name" placeholder="请输入用户昵称"></el-input>
           </el-form-item>
           <el-form-item label="头像" prop="imgUrl">
-            <Upload
-              :imgUrl="fromData.imgUrl"
-              :imgSize="1000"
-              @handleSuccess="uploadSuccess"
-            ></Upload>
+            <Upload :imgUrl="fromData.imgUrl" :imgSize="1000" @handleSuccess="uploadSuccess"></Upload>
           </el-form-item>
           <el-form-item label="账号" prop="telephone">
             <el-input v-model="fromData.telephone" placeholder="请输入账号"></el-input>
