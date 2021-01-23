@@ -106,7 +106,7 @@ export default {
       room_id: "1",
       to_uid: "0", // 默认为0，表示群聊
       chatMsgList: [],
-      UserList: [], //  用户在线用户列表
+      userList: [], //  用户在线用户列表
       userCount: 0, // 在线用户人数
       status: 3,
       isRoom: true,
@@ -242,8 +242,13 @@ export default {
             this.ImSocket.close();
             break;
           case 1: // 用户上线
+            this.userList.push(res.data);
+            this.userCount = this.userList.length;
             break;
           case 2: // 离开房间
+            const index = this.userList.findIndex((i) => i.uid === res.data.uid);
+            this.userList.splice(index, 1);
+            this.userCount = this.userList.length;
             break;
           case 3: // 接受群消息
             if (this.to_uid === "0" && this.room_id === res.data.room_id) {
