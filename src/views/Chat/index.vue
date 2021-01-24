@@ -242,8 +242,11 @@ export default {
             this.ImSocket.close();
             break;
           case 1: // 用户上线
-            this.userList.push(res.data);
-            this.userCount = this.userList.length;
+            const flag = this.userList.map((o) => o.uid).includes(res.data.uid);
+            if (!flag) {
+              this.userList.push(res.data);
+              this.userCount = this.userList.length;
+            }
             break;
           case 2: // 离开房间
             const index = this.userList.findIndex((i) => i.uid === res.data.uid);

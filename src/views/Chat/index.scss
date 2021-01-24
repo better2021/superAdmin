@@ -32,6 +32,32 @@
       width: 200px;
       height: 100%;
       border-right: 1px #778b76 solid;
+      overflow-y: auto;
+      /*滚动条整体部分*/
+      &::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+        background: #fcfae9;
+      }
+      /*滚动条里面可以拖动的那个*/
+      &::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: rgb(32, 137, 165);
+        background-image: -webkit-linear-gradient(
+          45deg,
+          hsla(0, 0%, 100%, 0.4) 25%,
+          transparent 0,
+          transparent 50%,
+          hsla(0, 0%, 100%, 0.4) 0,
+          hsla(0, 0%, 100%, 0.4) 75%,
+          transparent 0,
+          transparent
+        );
+      }
+      /* 外层轨道*/
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
       ul {
         list-style: none;
         .active {
