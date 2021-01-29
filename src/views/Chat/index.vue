@@ -86,6 +86,7 @@
 import WebsocketHeartbeatJs from "websocket-heartbeat-js";
 import emoji from "/@/assets/emoji.json";
 import { encodeMsg, decodeMsg } from "/@/utils/deCode";
+import notifyMe from "/@/utils/notice";
 import xss from "xss";
 
 export default {
@@ -277,6 +278,14 @@ export default {
             break;
           default:
           // console.log(res);
+        }
+
+        // 消息通知
+        if (status === 3 || status === 5) {
+          this.$notification(res.data.username, {
+            body: res.data.content,
+            icon: res.data.img_url,
+          });
         }
 
         // 设置滚动到底部
