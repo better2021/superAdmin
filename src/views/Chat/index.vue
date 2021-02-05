@@ -98,7 +98,7 @@ export default {
         pongTimeout: 10000, // ping消息发送之后，10秒内没收到后端消息便会认为连接断开
         reconnectTimeout: 2000, // 尝试重连的间隔时间
         pingMsg: encodeMsg("heartbeat"), // ping消息值
-        repeatLimit: 3, // 重连尝试次数
+        repeatLimit: 5, // 重连尝试次数
       },
       roomList: [],
       ImSocket: null,
