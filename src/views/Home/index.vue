@@ -7,7 +7,7 @@
           <Home v-show="activeName === 'user'"></Home>
         </keep-alive>
       </el-tab-pane>
-      <el-tab-pane label="IP白名单" name="ip">
+      <el-tab-pane label="IP黑名单" name="ip" v-if="Number(userId) === 1">
         <!-- 失活的组件将会被缓存！-->
         <keep-alive>
           <IP v-show="activeName === 'ip'"></IP>
@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       activeName: "user",
+      userId: this.$store.getters.userInfo.userId,
     };
   },
 };
