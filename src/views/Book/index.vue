@@ -205,6 +205,7 @@ export default {
 
     // 确认
     const handleSure = () => {
+      console.log(proxy)
       proxy.$refs["ruleForm"].validate(async (valid) => {
         if (!valid) return;
         let res;
